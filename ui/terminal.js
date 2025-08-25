@@ -134,6 +134,23 @@ export function startTerminal() {
       return;
     }
 
+     // 3. Toggle mock mode at runtime: /mock on | /mock off | /mock
+     if (lower === '/mock' || lower.startsWith('/mock ')) {
+      const arg = lower.split(' ')[1]; // undefined | 'on' | 'off'
+      if (arg === 'on') {
+        config.mock = true;  // mutate runtime config
+        console.log(chalk.cyan('\n Mock mode: ON (responses will be simulated)\n'));
+      } else if (arg === 'off') {
+        config.mock = false;
+        console.log(chalk.cyan('\n Mock mode: OFF (using real OpenAI API)\n'));
+      } else {
+        console.log(chalk.cyan(`\n Mock mode is currently ${config.mock ? 'ON' : 'OFF'}.\n`));
+        console.log(chalk.gray('Use `/mock on` or `/mock off` to change it.\n'));
+      }
+      rl.prompt();
+      return;
+    }
+
     // Exit support
     if (config.exitCommands.includes(lower)) {
       console.log(chalk.yellowBright('\n👋 Exiting SAS Assistant. See you next time!\n'));

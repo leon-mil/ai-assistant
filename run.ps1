@@ -27,7 +27,20 @@
 # $logPath = (Resolve-Path "$PSScriptRoot\logs").Path
 
 $windowsLogPath = (Resolve-Path "$PSScriptRoot\logs").Path
-$logPath = $windowsLogPath -replace '\\', '/' -replace '^([A-Za-z]):', { "/mnt/$($args[0].ToLower())" }
+
+# Detect Docker engine OS (linux/windows). Default to linux if detection fails.
+$osType = & docker info --format '{{.OSType}}' 2>$null
+if (-not $osType) { $osType = 'linux' }
+
+if ($osType -eq 'linux') {
+  # Convert C:\path\to\logs -> /mnt/c/path/to/logs
+  $drive = $windowsLogPath.Substring(0,1).ToLower()
+  $rest  = $windowsLogPath.Substring(2).Replace('\','/')
+  $logPath = "/mnt/$drive/$rest"
+} else {
+  # Windows containers: use native path
+  $logPath = $windowsLogPath
+}
 
 
 # ------------------------------------------------------------------------------------------------
@@ -54,5 +67,5 @@ docker build -t sas-copilot .
 Write-Host "Running container with log volume at $logPath"
 docker run -it `
   --env-file .env `
-  --mount type=bind,source=$logPath,target=/app/logs `
+  --mount type=bind,source="$logPath",target=/app/logs `
   sas-copilot

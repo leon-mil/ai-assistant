@@ -23,6 +23,12 @@ const openai = new OpenAI({ apiKey: config.apiKey });
  * @returns {Promise<string>} - The assistant's response text.
  */
 export async function getSasAssistantResponse(promptText, persona = config.defaultPersona) {
+  
+  // Mock mode short-circuit
+  if (config.mock) {
+    return `[MOCK:${persona}] You said: ${promptText}`;
+  }
+
   // Use the selected persona's system prompt, or fallback to default.
   const systemMessage = config.personas[persona] || config.personas[config.defaultPersona];
 

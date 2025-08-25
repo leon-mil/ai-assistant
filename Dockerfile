@@ -22,25 +22,25 @@
 #   without needing local Node/npm access.
 ######################################################################
 
-# 🟢 Use the official Node.js 20 LTS base image
-FROM node:20
+# Use the official Node.js 20 LTS base image
+FROM nexus.econ.census.gov/library/node:20
 
-# 📁 Set working directory inside the container
+# Set working directory inside the container
 WORKDIR /app
 
-# 📦 Copy package.json and package-lock.json first
+# Copy package.json and package-lock.json first
 # Enables layer caching of `npm install` if deps haven't changed
 COPY package*.json ./
 
-# 📥 Install NPM dependencies
+# Install NPM dependencies
 RUN npm install
 
-# 📂 Copy the full project source into the image
+# Copy the full project source into the image
 COPY . .
 
-# ✅ Reinstall critical runtime packages to ensure compatibility
+# Reinstall critical runtime packages to ensure compatibility
 # Helps avoid "missing module" errors in minimal base images
 RUN npm install dotenv readline openai
 
-# 🚀 Start the assistant CLI by default
+# Start the assistant CLI by default
 CMD ["node", "index.js"]

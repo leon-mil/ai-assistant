@@ -35,7 +35,10 @@ export const config = {
   apiKey: process.env.OPENAI_API_KEY,
 
   // OpenAI model to use (e.g., 'gpt-4' or 'gpt-3.5-turbo')
-  model: process.env.OPENAI_MODEL || 'gpt-5-turbo', // Default to GPT-5 Turbo if not specified
+  model: process.env.OPENAI_MODEL || 'gpt-5-mini', // Default to GPT-5 if not specified
+
+  // Enables mock mode for testing without real API calls
+  mock: process.env.OPENAI_MOCK === 'true',
 
   // Temperature controls output randomness (0.0 = deterministic, 1.0 = creative)
   temperature: parseFloat(process.env.OPENAI_TEMPERATURE) || 0.4,
