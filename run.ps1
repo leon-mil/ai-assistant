@@ -27,7 +27,7 @@
 # $logPath = (Resolve-Path "$PSScriptRoot\logs").Path
 
 $windowsLogPath = (Resolve-Path "$PSScriptRoot\logs").Path
-$logPath = $windowsLogPath -replace '\\', '/' -replace '^([A-Za-z]):', { "/mnt/$($args[0].ToLower())" }
+$logPath = $windowsLogPath -replace '\\', '/' -replace '^([A-Za-z]):', { "/mnt/$($matches[1].ToLower())" }
 
 
 # ------------------------------------------------------------------------------------------------
