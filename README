@@ -1,0 +1,156 @@
+# SAS Assistant – SOLID Architecture Design with OpenAI API
+
+## Overview
+
+This project is a SAS-focused AI assistant, built using the OpenAI ChatGPT API.
+It runs in a Dockerized Node.js environment and helps users generate, explain,
+and refine SAS code from a command-line interface in Visual Studio Code.
+
+The entire project follows the SOLID design principles to improve modularity,
+maintainability, testability, and scalability. It also includes extensive inline
+documentation to clarify purpose, reasoning, and functionality.
+
+It supports multiple assistant personas such as `sas`, `sql`, `mentor`, and `debugger`,
+which can be switched dynamically during runtime.
+
+## SOLID Principles in Practice
+
+### 1. S – Single Responsibility Principle
+
+Each file and module has one well-defined purpose.
+
+- `env.js`: Loads configuration
+- `openaiClient.js`: Handles API communication
+- `terminal.js`: Controls CLI interaction
+- `formatter.js`: Styles and renders responses
+- `assistant.js`: Orchestrates prompt/response logic
+
+Benefit: Easier to debug, test, and extend.
+
+### 2. O – Open/Closed Principle
+
+Modules are open for extension, closed for modification.
+
+You can:
+
+- Swap out the CLI (`terminal.js`) for a GUI without rewriting logic
+- Add support for other LLMs by modifying only `openaiClient.js`
+- Introduce new assistant personas without changing core logic
+
+Benefit: Safe, scalable extensibility.
+
+### 3. L – Liskov Substitution Principle
+
+Subtypes should be interchangeable with base types.
+
+This is seen in our service layer. For example, if `openaiClient.js` is replaced
+with another provider, the `assistant.js` doesn’t break.
+
+Benefit: Decoupling logic from implementation.
+
+### 4. I – Interface Segregation Principle
+
+Clients should not depend on methods they don’t use.
+
+The app layers communicate with clear, purpose-specific functions.
+Each module exposes only what’s necessary.
+
+Benefit: Minimal coupling, clearer API boundaries.
+
+### 5. D – Dependency Inversion Principle
+
+High-level modules should not depend on low-level modules. Both depend on abstractions.
+
+Core logic (`assistant.js`) doesn’t care how `openaiClient.js` works internally.
+It uses a well-defined interface.
+
+Benefit: Swappable backend logic and easy mocking for tests.
+
+## Project Structure
+
+```text
+sas-assistant/
+├── .env                      # Config for API key, model, temp and personas
+├── Dockerfile                # Environment to run assistant in isolation
+├── index.js                  # Entry point that launches the assistant
+│
+├── config/
+│   └── env.js               # Loads and exports app configuration and persona logic
+│
+├── core/
+│   └── assistant.js         # Handles AI interaction logic
+│
+├── services/
+│   └── openaiClient.js      # Encapsulates OpenAI API communication
+│
+├── ui/
+│   └── terminal.js          # CLI interface and user prompt handling
+│
+└── utils/
+    └── formatter.js         # Renders output with styles and structure
+```
+
+## Documentation Strategy
+
+Every file contains clear comments explaining:
+
+- Why the file exists
+- What it does
+- How it fits into the architecture
+- Benefits of doing it this way
+
+We do this to:
+
+- Help future maintainers quickly understand intent
+- Make onboarding new developers easier
+- Provide living documentation alongside the code
+
+## Getting Started
+
+1. Copy your OpenAI API key into `.env`:
+
+   ```env
+   OPENAI_API_KEY=sk-...
+   OPENAI_MODEL=gpt-4
+   OPENAI_TEMPERATURE=0.4
+   OPENAI_PERSONA=sas
+   OPENAI_EXIT_COMMANDS=exit,quit,q,:q
+   ```
+
+2. Build and run the assistant:
+
+   ```bash
+   docker build -t sas-copilot .
+   docker run -it --env-file .env sas-copilot
+   ```
+
+3. Use commands interactively:
+
+   ```text
+   💬 Ask about SAS: Explain proc means data=sales noprint;
+   💬 Ask about SAS: /persona sql
+   💬 Ask about SAS: /persona mentor
+   💬 Ask about SAS: What is a left join in SQL?
+   ```
+
+## Future Plans
+
+- Add history saving and search
+- VSCode extension integration
+- Web-based GUI
+- Streaming output (token-by-token)
+- Auto-detect personas from input
+
+## Why This Approach Works
+
+By using SOLID principles and clean documentation, we ensure this project:
+
+- Can grow safely over time
+- Is easy to understand and contribute to
+- Makes debugging and testing simple
+- Adapts easily to new features like personas or UI layers
+
+This is not just a tool — it's a blueprint for how to build clean,
+modular AI-driven developer assistants.
+
+Designed for clarity. Built for growth.

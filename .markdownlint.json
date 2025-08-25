@@ -1,0 +1,9 @@
+{
+    "default": true,
+    "MD004": { "style": "dash" },
+    "MD022": true,
+    "MD029": { "style": "ordered" },
+    "MD032": true,
+    "MD040": true
+  }
+  

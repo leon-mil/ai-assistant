@@ -1,0 +1,36 @@
+{
+    // Why This Design Works:
+    //
+    // - Separation of Concerns:
+    //   Markdown linting rules are isolated in their own config file.
+    //
+    // - Maintainability:
+    //   Rules are easy to update without digging through code or extensions.
+    //
+    // - Consistency:
+    //   Enforces markdown standards across the team.
+    //
+    // - Editor & CI Integration:
+    //   Works seamlessly with VSCode and markdownlint CLI/CI tools.
+    //
+    // - Team Friendly:
+    //   Helps onboard new contributors without friction.
+  
+    "default": true,
+  
+    // Enforce dash-style unordered lists (-)
+    "MD004": { "style": "dash" },
+  
+    // Require blank line before headings
+    "MD022": true,
+  
+    // Ordered lists should always be 1/1/1 style
+    "MD029": { "style": "ordered" },
+  
+    // Lists must be surrounded by blank lines
+    "MD032": true,
+  
+    // Fenced code blocks must specify a language
+    "MD040": true
+  }
+  

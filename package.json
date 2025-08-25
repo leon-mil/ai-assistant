@@ -1,0 +1,17 @@
+{
+  "name": "sas-assistant",
+  "version": "1.0.0",
+  "type": "module",
+  "description": "SAS Copilot using ChatGPT API",
+    "main": "sas-assistant.js",
+    "scripts": {
+      "start": "node sas-assistant.js"
+    },
+    "dependencies": {
+      "chalk": "^5.3.0",
+      "dotenv": "^16.0.3",
+      "openai": "^4.0.0",
+      "readline": "^1.3.0"
+    }
+  }
+  
