@@ -1,1 +1,14 @@
+@"
+node_modules/
+dist/
+logs/
+*.log
+coverage/
 .env
+.env.*
+!.env.example
+.DS_Store
+secret.txt
+npm-debug.log*
+yarn-error.log*
+"@ | Out-File -Encoding utf8 .gitignore
