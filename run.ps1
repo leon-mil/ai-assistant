@@ -26,7 +26,13 @@
 # ------------------------------------------------------------------------------------------------
 # $logPath = (Resolve-Path "$PSScriptRoot\logs").Path
 
-$windowsLogPath = (Resolve-Path "$PSScriptRoot\logs").Path
+$logsDir = Join-Path $PSScriptRoot "logs"
+if (-not (Test-Path $logsDir)) {
+  New-Item -ItemType Directory -Path $logsDir | Out-Null
+}
+
+# Windows -> WSL/Docker path (e.g., C:\... -> /mnt/c/...)
+$windowsLogPath = (Resolve-Path $logsDir).Path
 
 # Detect Docker engine OS (linux/windows). Default to linux if detection fails.
 $osType = & docker info --format '{{.OSType}}' 2>$null
@@ -35,13 +41,12 @@ if (-not $osType) { $osType = 'linux' }
 if ($osType -eq 'linux') {
   # Convert C:\path\to\logs -> /mnt/c/path/to/logs
   $drive = $windowsLogPath.Substring(0,1).ToLower()
-  $rest  = $windowsLogPath.Substring(2).Replace('\','/')
+  $rest  = $windowsLogPath.Substring(3).Replace('\','/')
   $logPath = "/mnt/$drive/$rest"
 } else {
   # Windows containers: use native path
   $logPath = $windowsLogPath
 }
-
 
 # ------------------------------------------------------------------------------------------------
 # STEP 2: Build the Docker image from the local Dockerfile
@@ -67,5 +72,11 @@ docker build -t sas-copilot .
 Write-Host "Running container with log volume at $logPath"
 docker run -it `
   --env-file .env `
-  --mount type=bind,source="$logPath",target=/app/logs `
+  --mount "type=bind,source=$logPath,target=/app/logs" `
   sas-copilot
+
+# ------------------------------------------------------------------------------------------------
+# STEP 4: Prune old logs after container run
+# ------------------------------------------------------------------------------------------------
+Write-Host "Pruning old logs..."
+& "$PSScriptRoot\clean-logs.ps1"
