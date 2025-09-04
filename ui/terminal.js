@@ -134,7 +134,29 @@ export function startTerminal() {
       return;
     }
 
-     // 3. Toggle mock mode at runtime: /mock on | /mock off | /mock
+    // 3. Show help menu
+    if (command === '/help' || command === 'help' || command === '?') {
+      console.log(chalk.cyan('\n📖 SAS Copilot — Help\n'));
+      console.log('Commands:');
+      console.log('  /personas            List all personas');
+      console.log('  /persona <name>      Switch persona (sas | sql | mentor | debugger | teacher)');
+      console.log('  /sas  /sql  /mentor  Shorthand persona switching');
+      console.log('  /mock [on|off]       Toggle or show mock mode status');
+      console.log('  /help  help  ?       Show this help menu');
+      console.log('  exit, quit, :q       Exit the assistant\n');
+
+      console.log('Use cases (examples):');
+      console.log('  • SAS: "Merge two datasets by id and date; show PROC SQL and DATA step."');
+      console.log('  • SQL: "Write a window function to get last non-null value per user."');
+      console.log('  • Debugger: "Here’s my SAS log; why is variable not found?"');
+      console.log('  • Mentor: "How to present a SAS refactor in a code review?"');
+      console.log('  • Teacher: "Explain PROC FORMAT with small examples."\n');
+
+      rl.prompt();
+      return;
+    }
+
+     // 4. Toggle mock mode at runtime: /mock on | /mock off | /mock
      if (lower === '/mock' || lower.startsWith('/mock ')) {
       const arg = lower.split(' ')[1]; // undefined | 'on' | 'off'
       if (arg === 'on') {
